@@ -7,9 +7,12 @@ public class SuitCase : MonoBehaviour
     [SerializeField] private int[] input;
     [SerializeField] private string Solution;
     [SerializeField] private string SolutionCheck;
+    private float velocity = 10;
     private bool solved;
 
     [SerializeField] private GameObject suitcaseUpper;
+
+    public bool Solved { get => solved; set => solved = value; }
 
     public void NewInput(int digit, int inputNum)
     {
@@ -35,7 +38,7 @@ public class SuitCase : MonoBehaviour
         {
             if (Solution == SolutionCheck)
             {
-                suitcaseUpper.transform.rotation = new Quaternion(180,0,0,0);   // rotação nao funciona direito
+                suitcaseUpper.transform.eulerAngles = new Vector3(70, 0 ,0);   
                 Debug.Log("Right Code");
                 solved = true;
             }
