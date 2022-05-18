@@ -18,6 +18,8 @@ public class PlayerCharacter : MonoBehaviour
     private float grabPositionCurrentY;
     private float mouseSensitivity = 2;
     private bool cameraLock;
+    private bool outOfCD;
+    private float switchCD;
 
     public bool CameraLock { get => cameraLock; }
     public bool IsGrabbing { get => isGrabbing; set => isGrabbing = value; }
@@ -46,9 +48,17 @@ public class PlayerCharacter : MonoBehaviour
         }
         if (Input.GetAxis("Mouse ScrollWheel") != 0f)
         {
-            inventory?.CicleItems();
+            if (outOfCD)
+                inventory?.CicleItems();
         }
-
+        if (!outOfCD)
+        {
+            switchCD += Time.deltaTime;
+        }
+        if (switchCD > 0.3f)
+        {
+            outOfCD = true;
+        }
     }
 
     private void FixedUpdate()
