@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
 public class UIManager : MonoBehaviour
@@ -9,15 +10,18 @@ public class UIManager : MonoBehaviour
     [SerializeField] private GameObject pauseMenu;
     [SerializeField] private GameObject optionsMenu;
     [SerializeField] private GameObject exitGameConfirmation;
+    [SerializeField] private Dropdown screenMode;
+    [SerializeField] private Dropdown screenRes;
+    private FullScreenMode currentMode;
     private bool pauseActive;
     private bool optionActive;
 
+    
+
     private void Start()
     {
-        mainMenu?.SetActive(false);
-        pauseMenu?.SetActive(false);
-        optionsMenu?.SetActive(false);
-        exitGameConfirmation?.SetActive(false);
+        DisableMenus();
+        ResetRes();
     }
 
     private void Update()
@@ -49,7 +53,10 @@ public class UIManager : MonoBehaviour
 
     private void PauseMenu()
     {
-        pauseMenu?.SetActive(true);
+        if (pauseMenu != null)
+        {
+            pauseMenu.SetActive(true);
+        }
         //Time.timeScale = 0;
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.Confined;
@@ -57,12 +64,11 @@ public class UIManager : MonoBehaviour
 
     private void UnPause()
     {
-        pauseMenu?.SetActive(false);
-        optionsMenu?.SetActive(false);
-        exitGameConfirmation?.SetActive(false);
+        DisableMenus();
         //Time.timeScale = 1;
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
+        optionActive = false;
     }
 
     public void OptionsMenuMM()
@@ -96,5 +102,54 @@ public class UIManager : MonoBehaviour
     public void ExitGame()
     {
         Application.Quit();
+    }
+
+    private void DisableMenus()
+    {
+        if (mainMenu != null)
+            mainMenu.SetActive(false);
+        if (pauseMenu != null)
+            pauseMenu?.SetActive(false);
+        if (optionsMenu != null)
+            optionsMenu.SetActive(false);
+        if (exitGameConfirmation != null)
+            exitGameConfirmation.SetActive(false);
+    }
+    
+    private void ResetRes()
+    {
+        Screen.SetResolution(1920, 1080, FullScreenMode.MaximizedWindow);
+    }
+
+    public void DropDownChangeScreenMode()
+    {
+        if (screenMode.value == 0)
+        {
+            currentMode = Screen.fullScreenMode = FullScreenMode.ExclusiveFullScreen;
+        }
+        else if (screenMode.value == 1)
+        {
+            currentMode = Screen.fullScreenMode = FullScreenMode.FullScreenWindow;
+        }
+        else if (screenMode.value == 2)
+        {
+            currentMode = Screen.fullScreenMode = FullScreenMode.Windowed;
+        }
+    }
+
+    public void DropDownChangeScreenRes()
+    {
+        if (screenRes.value == 0)
+        {
+            Screen.SetResolution(1920, 1080, currentMode);
+        }
+        else if (screenRes.value == 1)
+        {
+            Screen.SetResolution(1280, 720, currentMode);
+        }
+        else if (screenRes.value == 2)
+        {
+            Screen.SetResolution(960, 540, currentMode);
+        }
     }
 }
