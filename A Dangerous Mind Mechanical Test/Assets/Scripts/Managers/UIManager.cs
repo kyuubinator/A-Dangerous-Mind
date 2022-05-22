@@ -26,9 +26,12 @@ public class UIManager : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Escape))
+        if (!mainMenu)
         {
-            TryToPause();
+            if (Input.GetKeyDown(KeyCode.Escape))
+            {
+                TryToPause();
+            }
         }
     }
 
