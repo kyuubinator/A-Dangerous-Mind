@@ -16,7 +16,7 @@ public class UIManager : MonoBehaviour
     private bool pauseActive;
     private bool optionActive;
 
-    
+    public bool PauseActive { get => pauseActive; set => pauseActive = value; }
 
     private void Start()
     {

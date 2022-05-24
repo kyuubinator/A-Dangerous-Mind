@@ -15,7 +15,7 @@ public class PlayerCamera : MonoBehaviour
     [SerializeField] float cameraCurrentX = 0;
     Vector2 mouseDelta;
 
-    //[SerializeField] private UIManager ui;
+    [SerializeField] private UIManager ui;
     [SerializeField] private PlayerCharacter player;
 
 
@@ -24,7 +24,7 @@ public class PlayerCamera : MonoBehaviour
     #region MonoBehaviour
     private void LateUpdate()
     {
-        if (player.CameraLock)
+        if (player.CameraLock || player.FreezeMovement || ui.PauseActive)
             return;
         else
             UpdateMouseLook();

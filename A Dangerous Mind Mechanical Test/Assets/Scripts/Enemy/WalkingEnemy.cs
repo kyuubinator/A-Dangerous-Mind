@@ -58,13 +58,14 @@ public class WalkingEnemy : BaseEnemy
                     if (timer > timeTillReset)
                     {
                         agent.ResetPath();
-                        sawPlayer = false;
                         timer = 0;
+                        sawPlayer = false;
+                        _targetPosition = _targetPositionWalk;
+                        agent.SetDestination(_targetPosition);
+                        base.Move();
                     }
                 }
 
-                agent.SetDestination(_targetPosition);
-                base.Move();
             }
         }
         else

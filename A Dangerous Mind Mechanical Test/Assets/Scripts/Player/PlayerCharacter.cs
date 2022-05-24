@@ -12,6 +12,7 @@ public class PlayerCharacter : MonoBehaviour
     [SerializeField] private GameObject grabbedObject;
     [SerializeField] private ObjectToGrab grabbedObjectScript;
     [SerializeField] private Inventory inventory;
+    [SerializeField] private UIManager ui;
     private bool isGrabbing;
     private Vector3 mouseDelta;
     private float grabPositionCurrentX;
@@ -20,11 +21,14 @@ public class PlayerCharacter : MonoBehaviour
     private bool cameraLock;
     private bool outOfCD;
     private float switchCD;
+    private bool freezeMovement;
+    
 
     public bool CameraLock { get => cameraLock; }
     public bool IsGrabbing { get => isGrabbing; set => isGrabbing = value; }
     public GameObject GrabbedObject { get => grabbedObject; set => grabbedObject = value; }
     public Transform GrabPosition { get => grabPosition; set => grabPosition = value; }
+    public bool FreezeMovement { get => freezeMovement; set => freezeMovement = value; }
 
     private void Awake()
     {
@@ -63,6 +67,7 @@ public class PlayerCharacter : MonoBehaviour
 
     private void FixedUpdate()
     {
+        if(!freezeMovement || ui.PauseActive)
         MoveInDirection(new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical")));
     }
 
@@ -89,6 +94,7 @@ public class PlayerCharacter : MonoBehaviour
         {
             IInteractable interactable = hit.transform.GetComponent<IInteractable>();
             IGrabable grabable = hit.transform.GetComponent<IGrabable>();
+            IReadable readable = hit.transform.GetComponent<IReadable>();
             if (interactable != null)
             {
                 Debug.Log("Player Detected");
@@ -118,6 +124,12 @@ public class PlayerCharacter : MonoBehaviour
                     }
                 }
 
+            }
+            if (readable != null)
+            {
+                readable.Read();
+                freezeMovement = !freezeMovement;
+                rigidBody.velocity = Vector3.zero;
             }
         }
     }
