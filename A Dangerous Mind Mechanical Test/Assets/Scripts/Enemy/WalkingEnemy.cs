@@ -9,10 +9,10 @@ public class WalkingEnemy : BaseEnemy
 
     [SerializeField] private Transform player;
     [SerializeField] private float detectRange;
-    [SerializeField] public float knockBack;
-    [SerializeField] private float cooldownTimer;
+    [SerializeField] private float timeTillReset;
     [SerializeField] private float timer;
-    [SerializeField] public NavMeshAgent agent;
+    [SerializeField] private NavMeshAgent agent;
+    [SerializeField] private bool sawPlayer;
 
 
     #endregion
@@ -39,14 +39,11 @@ public class WalkingEnemy : BaseEnemy
             PlayerCharacter playerScript = hit.transform.GetComponent<PlayerCharacter>();
             if (playerScript != null)
             {
+                if (!sawPlayer)
+                    sawPlayer = true;
+
                 _targetPosition = playerScript.transform.position;
-                timer += Time.deltaTime;
                 agent.SetDestination(_targetPosition);
-                if (timer > cooldownTimer)
-                {
-                    Attack();
-                    timer = 0;
-                }
                 if (Vector3.Distance(transform.position, player.transform.position) < detectRange / 4)
                 {
                     agent.ResetPath();
@@ -55,6 +52,17 @@ public class WalkingEnemy : BaseEnemy
             }
             else
             {
+                if (sawPlayer)
+                {
+                    timer += Time.deltaTime;
+                    if (timer > timeTillReset)
+                    {
+                        agent.ResetPath();
+                        sawPlayer = false;
+                        timer = 0;
+                    }
+                }
+
                 agent.SetDestination(_targetPosition);
                 base.Move();
             }
