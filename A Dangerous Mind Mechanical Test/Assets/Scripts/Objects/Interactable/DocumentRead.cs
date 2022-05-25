@@ -5,6 +5,7 @@ using UnityEngine;
 public class DocumentRead : MonoBehaviour, IReadable
 {
     [SerializeField] private GameObject docUI;
+    [SerializeField] private GameObject blur;
     [SerializeField] private bool interacting;
 
     public void Read()
@@ -12,10 +13,12 @@ public class DocumentRead : MonoBehaviour, IReadable
         if (!interacting)
         {
             docUI.SetActive(true);
+            blur.SetActive(true);
         }
         else
         {
             docUI.SetActive(false);
+            blur.SetActive(false);
         }
         interacting = !interacting;
     }
