@@ -30,8 +30,9 @@ public abstract class BaseEnemy : MonoBehaviour
         _targetPositionWalk = _patrolPositionOne;
     }
 
-    private void Update()
+    protected virtual void Update()
     {
+        Debug.Log("dd");
         Move();
     }
 

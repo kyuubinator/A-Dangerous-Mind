@@ -20,7 +20,6 @@ public class UIManager : MonoBehaviour
 
     private void Start()
     {
-        DisableMenus();
         ResetRes();
     }
 

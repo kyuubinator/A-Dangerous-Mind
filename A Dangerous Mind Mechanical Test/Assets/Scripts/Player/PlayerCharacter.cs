@@ -22,6 +22,7 @@ public class PlayerCharacter : MonoBehaviour
     private bool outOfCD;
     private float switchCD;
     private bool freezeMovement;
+    private bool hidden;
     
 
     public bool CameraLock { get => cameraLock; }
@@ -95,6 +96,7 @@ public class PlayerCharacter : MonoBehaviour
             IInteractable interactable = hit.transform.GetComponent<IInteractable>();
             IGrabable grabable = hit.transform.GetComponent<IGrabable>();
             IReadable readable = hit.transform.GetComponent<IReadable>();
+            IHideble hideble = hit.transform.GetComponent<IHideble>();
             if (interactable != null)
             {
                 Debug.Log("Player Detected");
@@ -130,6 +132,11 @@ public class PlayerCharacter : MonoBehaviour
                 readable.Read();
                 freezeMovement = !freezeMovement;
                 rigidBody.velocity = Vector3.zero;
+            }
+            if (hideble != null)
+            {
+                if (!hidden)
+                    hideble.Hide(this.gameObject);
             }
         }
     }
