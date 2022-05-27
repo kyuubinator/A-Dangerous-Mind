@@ -24,7 +24,7 @@ public class PlayerCamera : MonoBehaviour
     #region MonoBehaviour
     private void LateUpdate()
     {
-        if (player.CameraLock || player.FreezeMovement || ui.PauseActive)
+        if (player.CameraLock || player.FreezeMovement || ui.PauseActive || ui.GameOver)
             return;
         else
             UpdateMouseLook();

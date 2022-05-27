@@ -13,76 +13,46 @@ public class WalkingEnemy : BaseEnemy
     [SerializeField] private float timer;
     [SerializeField] private NavMeshAgent agent;
     [SerializeField] private bool sawPlayer;
-    [Header("Timers")]
+    [Header("Hiding")]
+    [SerializeField] private Hide hide;
+    [SerializeField] private LayerMask hideLayer;
+    private bool hidden;
 
-    [Header("Time Out")]
-    [SerializeField] private bool timeOut;
-    [SerializeField] private bool timeOutAfterRandom;
-    [SerializeField] private float timeOutRandom;
-    [SerializeField] private float timeOutTimer;
-    [Header("Time In")]
-    [SerializeField] private bool timeIn;
-    [SerializeField] private bool timeInAfterRandom;
-    [SerializeField] private float timeInRandom;
-    [SerializeField] private float timeInTimer;
+    [SerializeField] private UIManager ui;
+
+    public bool SawPlayer { get => sawPlayer; }
 
 
     #endregion
 
+
+    #region Mono Behaviour
     private void Start()
     {
         player = GameObject.Find("Player").transform;
-        timeOutAfterRandom = true;
-        timeOut = true;
     }
 
     protected override void Update()
     {
         base.Update();
-        if (timeOutAfterRandom)
+        if (!sawPlayer)
         {
-            timeOutRandom = Random.Range(0, 240);
-            timeOutAfterRandom = false;
+            timerResetPath += Time.deltaTime;
         }
-        if (timeOut)
+        if (timerResetPath >= timeTillResetPath)
         {
-            timeOutTimer += Time.deltaTime;
-            if (timeOutTimer >= timeOutRandom)
-            {
-                this.gameObject.SetActive(false);
-                timeOut = false;
-                timeInAfterRandom = true;
-                timeIn = true;
-            }
-        }
-
-        if (timeInAfterRandom)
-        {
-            timeInRandom = Random.Range(0, 240);
-            timeInAfterRandom = false;
-        }
-        if (timeIn)
-        {
-            timeInTimer += Time.deltaTime;
-            if (timeInTimer >= timeInRandom)
-            {
-                this.gameObject.SetActive(true);
-                timeIn = false;
-                timeOutAfterRandom = true;
-                timeOut = true;
-            }
+            RandomLocation();
+            timerResetPath = 0;
         }
     }
 
-    public override void Attack()
-    {
+    #endregion
 
-    }
-
+    #region Movement/followplayer
     public override void Move()
     {
         Vector3 _direction = player.position - transform.position;
-        transform.LookAt(_targetPosition);
+        transform.LookAt(targetPosition);
 
         if (Vector3.Distance(transform.position, player.transform.position) < detectRange)
         {
@@ -95,10 +65,11 @@ public class WalkingEnemy : BaseEnemy
             {
                 if (!sawPlayer)
                 {
+                    hidden = false;
                     sawPlayer = true;
                 }
-                _targetPosition = playerScript.transform.position;
-                agent.SetDestination(_targetPosition);
+                targetPosition = playerScript.transform.position;
+                agent.SetDestination(targetPosition);
                 if (Vector3.Distance(transform.position, player.transform.position) < detectRange / 4)
                 {
                     agent.ResetPath();
@@ -117,14 +88,28 @@ public class WalkingEnemy : BaseEnemy
             {
                 NotSeeingPlayer();
             }
-            agent.SetDestination(_targetPosition);
-            base.Move();
+            agent.SetDestination(targetPosition);
+            NormalMovement();
         }
     }
 
+    public void NormalMovement()
+    {
+        if (targetPosition != null)
+        {
+            transform.LookAt(targetPosition);
+        }
+        if (Vector3.Distance(transform.position, targetPosition) < 0.2f)
+        {
+            RandomLocation();
+        }
+    }
+    #endregion
+
+    #region Not Seeing player
     private void NotSeeingPlayer()
     {
-        if (Vector3.Distance(_targetPosition, agent.transform.position) <= 0.2f)
+        if (Vector3.Distance(targetPosition, agent.transform.position) <= 0.2f)
         {
             agent.ResetPath();
             timer += Time.deltaTime;
@@ -133,10 +118,38 @@ public class WalkingEnemy : BaseEnemy
                 agent.ResetPath();
                 timer = 0;
                 sawPlayer = false;
-                _targetPosition = _targetPositionWalk;
-                agent.SetDestination(_targetPosition);
+                RandomLocation();
                 base.Move();
+                hidden = false;
             }
+
+            #region CheckHiding
+
+            if (timer >= timeTillReset * 0.75){
+                if (!hidden)
+                {
+                    Collider[] colider = Physics.OverlapSphere(transform.position, 10, hideLayer);
+                    foreach (Collider col in colider)
+                    {
+                        Hide hideScript = col.GetComponent<Hide>();
+                        if (hideScript != null)
+                        {
+                            hide = hideScript;
+                        }
+                    }
+                    float random = Random.Range(1, 10);
+                    if (random <= 2)
+                    {
+                        Debug.Log("After random");
+                        hide.Unhide();
+                        hide = null;
+                    }
+                    hidden = true;
+                }
+            }
+
+            #endregion
+
         }
         else
         {
@@ -148,11 +161,38 @@ public class WalkingEnemy : BaseEnemy
                     agent.ResetPath();
                     timer = 0;
                     sawPlayer = false;
-                    _targetPosition = _targetPositionWalk;
-                    agent.SetDestination(_targetPosition);
+                    RandomLocation();
                     base.Move();
                 }
             }
+        }
+    }
+
+    #endregion
+
+    public void RandomLocation()
+    {
+        Vector3 randomDirection = (Random.insideUnitSphere * radius);
+        randomDirection = new Vector3(randomDirection.x, transform.position.y, randomDirection.z);
+        NavMeshPath path = new NavMeshPath();
+        agent.CalculatePath(randomDirection, path);
+        if (path.status == NavMeshPathStatus.PathInvalid)
+        {
+            RandomLocation();
+            return;
+        }
+        else
+            targetPosition = randomDirection;
+        agent.SetDestination(targetPosition);
+        timerResetPath = 0;
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        PlayerCharacter player = collision.gameObject.GetComponent<PlayerCharacter>();
+        if (player != null)
+        {
+            ui.ShowLose();
         }
     }
 }

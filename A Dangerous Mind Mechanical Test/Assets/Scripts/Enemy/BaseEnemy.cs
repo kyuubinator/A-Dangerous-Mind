@@ -16,9 +16,12 @@ public abstract class BaseEnemy : MonoBehaviour
     [SerializeField] private Vector3 _patrolPositionOne;
     [SerializeField] private Vector3 _patrolPositionTwo;
     [SerializeField] protected float _movementSpeed;
+    [SerializeField] protected float radius;
+    [SerializeField] protected float timeTillResetPath;
+    [SerializeField] protected float timerResetPath;
 
     protected Vector3 _targetPositionWalk;
-    protected Vector3 _targetPosition;
+    protected Vector3 targetPosition;
 
     #endregion
 
@@ -26,35 +29,25 @@ public abstract class BaseEnemy : MonoBehaviour
 
     protected virtual void Awake()
     {
-        _targetPosition = _patrolPositionOne;
+        targetPosition = _patrolPositionOne;
         _targetPositionWalk = _patrolPositionOne;
     }
 
     protected virtual void Update()
     {
-        Debug.Log("dd");
+        Debug.DrawRay(targetPosition, Vector3.up, Color.blue, 6);
         Move();
     }
 
     #endregion
 
-    public abstract void Attack();
+    public virtual void Attack()
+    {
+
+    }
 
     public virtual void Move()
     {
-        transform.LookAt(_targetPosition);
-        if (Vector3.Distance(transform.position, _targetPosition) < 0.6f)
-        {
-            if (_targetPositionWalk == _patrolPositionOne)
-            {
-                _targetPosition = _patrolPositionTwo;
-                _targetPositionWalk = _patrolPositionTwo;
-            }
-            else
-            {
-                _targetPosition = _patrolPositionOne;
-                _targetPositionWalk = _patrolPositionOne;
-            }
-        }
+        
     }
 }

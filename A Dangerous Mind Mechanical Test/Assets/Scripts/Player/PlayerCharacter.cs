@@ -68,7 +68,7 @@ public class PlayerCharacter : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if(!freezeMovement || ui.PauseActive)
+        if(!freezeMovement && !ui.PauseActive && !ui.GameOver)
         MoveInDirection(new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical")));
     }
 

@@ -10,13 +10,17 @@ public class UIManager : MonoBehaviour
     [SerializeField] private GameObject pauseMenu;
     [SerializeField] private GameObject optionsMenu;
     [SerializeField] private GameObject exitGameConfirmation;
+    [SerializeField] private GameObject winMenu;
+    [SerializeField] private GameObject loseMenu;
     [SerializeField] private Dropdown screenMode;
     [SerializeField] private Dropdown screenRes;
     private FullScreenMode currentMode;
     private bool pauseActive;
+    private bool gameOver;
     private bool optionActive;
 
     public bool PauseActive { get => pauseActive; set => pauseActive = value; }
+    public bool GameOver { get => gameOver; set => gameOver = value; }
 
     private void Start()
     {
@@ -42,14 +46,17 @@ public class UIManager : MonoBehaviour
 
     public void TryToPause()
     {
-        pauseActive = !pauseActive;
-        if (pauseActive)
+        if (!gameOver)
         {
-            PauseMenu();
-        }
-        else
-        {
-            UnPause();
+            pauseActive = !pauseActive;
+            if (pauseActive)
+            {
+                PauseMenu();
+            }
+            else
+            {
+                UnPause();
+            }
         }
     }
 
@@ -86,6 +93,24 @@ public class UIManager : MonoBehaviour
         }
     }
 
+    public void ShowLose()
+    {
+        loseMenu?.SetActive(true);
+        gameOver = true;
+        Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.Confined;
+        Time.timeScale = 0;
+    }
+
+    public void ShowWin()
+    {
+        winMenu?.SetActive(true);
+        gameOver = true;
+        Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.Confined;
+        Time.timeScale = 0;
+    }
+
     public void MainMenu()
     {
         SceneManager.LoadScene("MainMenu");
@@ -101,10 +126,17 @@ public class UIManager : MonoBehaviour
         exitGameConfirmation?.SetActive(false);
     }
 
+    public void Restartgame()
+    {
+        Time.timeScale = 1;
+        SceneManager.LoadScene("SampleScene");
+    }
+
     public void ExitGame()
     {
         Application.Quit();
     }
+
 
     private void DisableMenus()
     {
