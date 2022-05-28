@@ -44,6 +44,14 @@ public class WalkingEnemy : BaseEnemy
             RandomLocation();
             timerResetPath = 0;
         }
+        if (sawPlayer)
+        {
+            agent.speed = 2.5f;
+        }
+        else
+        {
+            agent.speed = 1f;
+        }
     }
 
     #endregion
