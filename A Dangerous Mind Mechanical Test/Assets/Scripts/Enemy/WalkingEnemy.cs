@@ -46,7 +46,7 @@ public class WalkingEnemy : BaseEnemy
         }
         if (sawPlayer)
         {
-            agent.speed = 2.5f;
+            agent.speed = 2f;
         }
         else
         {

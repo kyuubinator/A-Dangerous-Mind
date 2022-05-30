@@ -27,7 +27,7 @@ public class NumericLock : MonoBehaviour, IInteractable
                 }
                 //transform.rotation = new Quaternion(transform.rotation.x-36,0,transform.rotation.z, 0);    // rotação nao funciona direito
                 //transform.rotation = new Quaternion(36, 0, 0, 0);
-                transform.eulerAngles = new Vector3(20 - increaseValue * number, 0 ,-90);
+                transform.eulerAngles = new Vector3(20 - increaseValue * number, 180 ,-90);
                 suitcase.NewInput(number, lockNumber);
             }
         }

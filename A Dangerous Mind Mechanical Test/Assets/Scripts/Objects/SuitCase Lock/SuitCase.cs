@@ -38,7 +38,7 @@ public class SuitCase : MonoBehaviour
         {
             if (Solution == SolutionCheck)
             {
-                suitcaseUpper.transform.eulerAngles = new Vector3(70, 0 ,0);   
+                suitcaseUpper.transform.eulerAngles = new Vector3(70, 180 ,0);   
                 Debug.Log("Right Code");
                 solved = true;
             }

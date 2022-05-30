@@ -18,11 +18,14 @@ public class EnemyManager : MonoBehaviour
     [SerializeField] private GameObject enemy;
     [SerializeField] private WalkingEnemy enemyScript;
 
-    private void Start()
-    {
-        timeOutAfterRandom = true;
-        timeOut = true;
-    }
+    public bool TimeOut { get => timeOut; set => timeOut = value; }
+    public bool TimeOutAfterRandom { get => timeOutAfterRandom; set => timeOutAfterRandom = value; }
+
+    //private void Start()
+    //{
+    //    timeOut = true;
+    //    timeOutAfterRandom = true;
+    //}
 
     private void Update()
     {
@@ -64,5 +67,12 @@ public class EnemyManager : MonoBehaviour
                 }
             }
         }
+    }
+
+    public void StartEnemy()
+    {
+        enemy.SetActive(true);
+        timeOut = true;
+        timeOutAfterRandom = true;
     }
 }
