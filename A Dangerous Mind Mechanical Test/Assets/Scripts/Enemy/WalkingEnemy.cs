@@ -46,7 +46,7 @@ public class WalkingEnemy : BaseEnemy
         }
         if (sawPlayer)
         {
-            agent.speed = 2f;
+            agent.speed = 5f;
         }
         else
         {
@@ -117,23 +117,14 @@ public class WalkingEnemy : BaseEnemy
     #region Not Seeing player
     private void NotSeeingPlayer()
     {
-        if (Vector3.Distance(targetPosition, agent.transform.position) <= 0.2f)
+        if (Vector3.Distance(targetPosition, agent.transform.position) <= 0.05f)
         {
             agent.ResetPath();
             timer += Time.deltaTime;
-            if (timer > timeTillReset)
-            {
-                agent.ResetPath();
-                timer = 0;
-                sawPlayer = false;
-                RandomLocation();
-                base.Move();
-                hidden = false;
-            }
 
             #region CheckHiding
 
-            if (timer >= timeTillReset * 0.75){
+            if (timer >= timeTillReset){
                 if (!hidden)
                 {
                     Collider[] colider = Physics.OverlapSphere(transform.position, 10, hideLayer);
@@ -146,9 +137,8 @@ public class WalkingEnemy : BaseEnemy
                         }
                     }
                     float random = Random.Range(1, 10);
-                    if (random <= 2)
+                    if (random <= 7)
                     {
-                        Debug.Log("After random");
                         hide.Unhide();
                         hide = null;
                     }
@@ -157,6 +147,17 @@ public class WalkingEnemy : BaseEnemy
             }
 
             #endregion
+
+            if (timer > timeTillReset)
+            {
+                agent.ResetPath();
+                timer = 0;
+                sawPlayer = false;
+                RandomLocation();
+                base.Move();
+                hidden = false;
+            }
+
 
         }
         else

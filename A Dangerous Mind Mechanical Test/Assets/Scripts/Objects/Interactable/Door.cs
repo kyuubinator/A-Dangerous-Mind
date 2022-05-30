@@ -67,7 +67,7 @@ public class Door : MonoBehaviour, IInteractable
             if (enemy != null)
             {
                 int RandomNum = Random.Range(0, 10);
-                if (RandomNum <= 4)
+                if (RandomNum <= 10)
                 {
                     EnemyOpen();
                 }
