@@ -16,10 +16,10 @@ public class WalkingEnemy : BaseEnemy
     [Header("Hiding")]
     [SerializeField] private Hide hide;
     [SerializeField] private LayerMask hideLayer;
-    private bool hidden;
+    [SerializeField] private bool hidden;
 
     [SerializeField] private UIManager ui;
-
+    [SerializeField] private float distance;
     public bool SawPlayer { get => sawPlayer; }
 
 
@@ -34,6 +34,7 @@ public class WalkingEnemy : BaseEnemy
 
     protected override void Update()
     {
+        distance = Vector3.Distance(player.transform.position, agent.transform.position);
         base.Update();
         if (!sawPlayer)
         {
@@ -43,14 +44,6 @@ public class WalkingEnemy : BaseEnemy
         {
             RandomLocation();
             timerResetPath = 0;
-        }
-        if (sawPlayer)
-        {
-            agent.speed = 5f;
-        }
-        else
-        {
-            agent.speed = 1f;
         }
     }
 
@@ -67,7 +60,14 @@ public class WalkingEnemy : BaseEnemy
             RaycastHit hit;
             Debug.DrawRay(transform.position, _direction, Color.red, detectRange);
             Physics.Raycast(transform.position, _direction, out hit, detectRange);
-            if(hit.transform == null) { return; }
+            if(hit.transform == null) 
+            {
+                if (sawPlayer)
+                {
+                    NotSeeingPlayer();
+                }
+                return;
+            }
             PlayerCharacter playerScript = hit.transform.GetComponent<PlayerCharacter>();
             if (playerScript != null)
             {
@@ -83,10 +83,14 @@ public class WalkingEnemy : BaseEnemy
                     agent.ResetPath();
                 }
                 timer = 0;
+                agent.speed = 5f;
             }
             else
             {
-                NotSeeingPlayer();
+                if (sawPlayer)
+                {
+                    NotSeeingPlayer();
+                }
                 return;
             }
         }
@@ -96,8 +100,11 @@ public class WalkingEnemy : BaseEnemy
             {
                 NotSeeingPlayer();
             }
-            agent.SetDestination(targetPosition);
-            NormalMovement();
+            else
+            {
+                agent.SetDestination(targetPosition);
+                NormalMovement();
+            }
         }
     }
 
@@ -117,17 +124,23 @@ public class WalkingEnemy : BaseEnemy
     #region Not Seeing player
     private void NotSeeingPlayer()
     {
-        if (Vector3.Distance(targetPosition, agent.transform.position) <= 0.05f)
+        timer += Time.deltaTime;
+        agent.speed = 3f;
+        if (distance <= 1.5f)
         {
+            //agent.angularSpeed = 0;
+            //agent.speed = 0;
             agent.ResetPath();
-            timer += Time.deltaTime;
-
+            //timer += Time.deltaTime;
+            Debug.Log("Before Hide");
             #region CheckHiding
 
             if (timer >= timeTillReset){
+                Debug.Log("trying to unhide");
                 if (!hidden)
                 {
-                    Collider[] colider = Physics.OverlapSphere(transform.position, 10, hideLayer);
+                    Debug.Log("hidden = false");
+                    Collider[] colider = Physics.OverlapSphere(transform.position, 7, hideLayer);
                     foreach (Collider col in colider)
                     {
                         Hide hideScript = col.GetComponent<Hide>();
@@ -137,34 +150,46 @@ public class WalkingEnemy : BaseEnemy
                         }
                     }
                     float random = Random.Range(1, 10);
+                    Debug.Log("after random");
                     if (random <= 7)
                     {
-                        hide.Unhide();
-                        hide = null;
+                        Debug.Log(" 70%");
+                        if (hide != null)
+                            hide.Unhide();
+                            Debug.Log(" Not null + Correu Unhide");
+                        Debug.Log(" hide = null");
                     }
+                    else
+                    {
+                        RandomLocation();
+                    }
+                    hide = null;
                     hidden = true;
+                    Debug.Log("Hidden true");
                 }
             }
-
-            #endregion
-
-            if (timer > timeTillReset)
+            if (Vector3.Distance(transform.position, targetPosition) < 1f)
             {
                 agent.ResetPath();
+            }
+                #endregion
+                Debug.Log("after Hide");
+            if (timer >= timeTillReset)
+            {
+                //agent.ResetPath();
                 timer = 0;
                 sawPlayer = false;
                 RandomLocation();
                 base.Move();
                 hidden = false;
+                Debug.Log("Reset Path");
             }
-
-
         }
         else
         {
             if (sawPlayer)
             {
-                timer += Time.deltaTime;
+                //timer += Time.deltaTime;
                 if (timer > timeTillReset)
                 {
                     agent.ResetPath();
@@ -181,6 +206,8 @@ public class WalkingEnemy : BaseEnemy
 
     public void RandomLocation()
     {
+        Debug.Log("RandomLocation");
+        agent.speed = 1f;
         Vector3 randomDirection = (Random.insideUnitSphere * radius);
         randomDirection = new Vector3(randomDirection.x, transform.position.y, randomDirection.z);
         NavMeshPath path = new NavMeshPath();
