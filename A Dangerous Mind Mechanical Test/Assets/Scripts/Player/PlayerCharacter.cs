@@ -43,7 +43,14 @@ public class PlayerCharacter : MonoBehaviour
     private float candleAnimTimer;
     private bool candleBool;
 
-
+    [Header("KeyItemsChecks")]
+    [SerializeField] private bool KeyMasterBedroom;
+    [SerializeField] private bool KeyBathroom;
+    [SerializeField] private bool KeyLivingroom;
+    [SerializeField] private bool KeyKitchen;
+    [SerializeField] private bool KeyBox;
+    //[SerializeField] private bool ;
+    //[SerializeField] private bool ;
 
     public bool CameraLock { get => cameraLock; }
     public bool IsGrabbing { get => isGrabbing; set => isGrabbing = value; }
@@ -151,6 +158,7 @@ public class PlayerCharacter : MonoBehaviour
             IGrabable grabable = hit.transform.GetComponent<IGrabable>();
             IReadable readable = hit.transform.GetComponent<IReadable>();
             IHideble hideble = hit.transform.GetComponent<IHideble>();
+            IPickable pickup = hit.transform.GetComponent<IPickable>();
             if (interactable != null)
             {
                 Debug.Log("Player Detected");
@@ -191,6 +199,10 @@ public class PlayerCharacter : MonoBehaviour
             {
                 if (!hidden)
                     hideble.Hide(this.gameObject);
+            }
+            if (pickup != null)
+            {
+                pickup.Pickup(this, ui);
             }
         }
     }
@@ -248,5 +260,24 @@ public class PlayerCharacter : MonoBehaviour
     {
         candleOutOfTime = false;
         candleLifeTime += Value;
+    }
+
+    public void EnableBools(int value)
+    {
+        switch (value)
+        {
+            case 0:
+                KeyMasterBedroom = true;
+                break;
+            case 1:
+                KeyBathroom = true;
+                break;
+            case 2:
+                KeyLivingroom = true;
+                break;
+            case 3:
+                KeyKitchen = true;
+                break;
+        }
     }
 }

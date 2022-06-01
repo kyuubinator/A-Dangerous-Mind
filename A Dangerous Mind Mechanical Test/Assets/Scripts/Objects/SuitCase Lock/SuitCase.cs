@@ -7,7 +7,6 @@ public class SuitCase : MonoBehaviour
     [SerializeField] private int[] input;
     [SerializeField] private string Solution;
     [SerializeField] private string SolutionCheck;
-    private float velocity = 10;
     private bool solved;
 
     [SerializeField] private GameObject suitcaseUpper;

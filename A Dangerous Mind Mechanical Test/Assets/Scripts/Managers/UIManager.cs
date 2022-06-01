@@ -18,6 +18,10 @@ public class UIManager : MonoBehaviour
     private bool pauseActive;
     private bool gameOver;
     private bool optionActive;
+    [Header("TextToDisplay")]
+    [SerializeField] private GameObject textToDisplayObject;
+    [SerializeField] private Animator textToDisplayAnim;
+    [SerializeField] private Text displayingText;
 
     public bool PauseActive { get => pauseActive; set => pauseActive = value; }
     public bool GameOver { get => gameOver; set => gameOver = value; }
@@ -185,5 +189,21 @@ public class UIManager : MonoBehaviour
         {
             Screen.SetResolution(960, 540, currentMode);
         }
+    }
+
+    public void DisplayText(string text)
+    {
+        displayingText.text = text;
+        StartCoroutine(TextAnim());
+    }
+
+    IEnumerator TextAnim ()
+    {
+        textToDisplayObject.SetActive(true);
+        //textToDisplayAnim.SetBool("Active", true);
+        yield return new WaitForSeconds(3);
+        //textToDisplayAnim.SetBool("Active", false);
+        yield return new WaitForSeconds(1);
+        textToDisplayObject.SetActive(false);
     }
 }
