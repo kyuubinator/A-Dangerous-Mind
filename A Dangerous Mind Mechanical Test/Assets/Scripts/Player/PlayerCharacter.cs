@@ -4,32 +4,56 @@ using UnityEngine;
 
 public class PlayerCharacter : MonoBehaviour
 {
+    #region References
 
     Rigidbody rigidBody;
-    [SerializeField] private float maxMovementSpeed;
-    [SerializeField] private float movementSpeed;
+    [Header("References")]
     [SerializeField] private Transform grabPosition;
     [SerializeField] private GameObject grabbedObject;
     [SerializeField] private ObjectToGrab grabbedObjectScript;
     [SerializeField] private Inventory inventory;
     [SerializeField] private UIManager ui;
-    private bool isGrabbing;
+    [SerializeField] private GameObject candleLight;
+
+    [Header("Movement")]
+    [SerializeField] private float maxMovementSpeed;
+    [SerializeField] private float movementSpeed;
+
+    [Header("Mouse")]
     private Vector3 mouseDelta;
-    private float grabPositionCurrentX;
-    private float grabPositionCurrentY;
     private float mouseSensitivity = 2;
     private bool cameraLock;
+
+    [Header("Grab")]
+    private bool isGrabbing;
+    private float grabPositionCurrentX;
+    private float grabPositionCurrentY;
+
+    [Header("Checks and Restrains")]
     private bool outOfCD;
     private float switchCD;
     private bool freezeMovement;
     private bool hidden;
-    
+
+    [Header("Candle")]
+    [SerializeField] private Animator animCandle;
+    [SerializeField] private float candleAnimCooldown;
+    [SerializeField] private float candleLifeTime;
+    [SerializeField] private bool candleOutOfTime;
+    private float candleAnimTimer;
+    private bool candleBool;
+
+
 
     public bool CameraLock { get => cameraLock; }
     public bool IsGrabbing { get => isGrabbing; set => isGrabbing = value; }
     public GameObject GrabbedObject { get => grabbedObject; set => grabbedObject = value; }
     public Transform GrabPosition { get => grabPosition; set => grabPosition = value; }
     public bool FreezeMovement { get => freezeMovement; set => freezeMovement = value; }
+
+    #endregion
+
+    #region MonoBehaviour
 
     private void Awake()
     {
@@ -39,6 +63,7 @@ public class PlayerCharacter : MonoBehaviour
 
     private void Update()
     {
+        candleAnimTimer += Time.deltaTime;
         if (Input.GetKeyDown(KeyCode.E))
         {
             TryToInteract();
@@ -50,6 +75,14 @@ public class PlayerCharacter : MonoBehaviour
         if (Input.GetKeyUp(KeyCode.R))
         {
             cameraLock = false;;
+        }
+        if (Input.GetKeyUp(KeyCode.F))
+        {
+            if (candleAnimTimer >= candleAnimCooldown && !candleOutOfTime)
+            {
+                LightCandle();
+                candleAnimTimer = 0;
+            }
         }
         if (Input.GetAxis("Mouse ScrollWheel") != 0f)
         {
@@ -64,6 +97,18 @@ public class PlayerCharacter : MonoBehaviour
         {
             outOfCD = true;
         }
+        if (candleBool)
+        {
+            candleLifeTime -= Time.deltaTime;
+            if (candleLifeTime <= 0)
+            {
+                candleOutOfTime = true;
+                if (!candleBool)
+                {
+                    LightCandle();
+                }
+            }
+        }
     }
 
     private void FixedUpdate()
@@ -71,6 +116,10 @@ public class PlayerCharacter : MonoBehaviour
         if(!freezeMovement && !ui.PauseActive && !ui.GameOver)
         MoveInDirection(new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical")));
     }
+
+    #endregion
+
+    #region Move
 
     private void MoveInDirection(Vector2 direction)
     {
@@ -88,6 +137,11 @@ public class PlayerCharacter : MonoBehaviour
             movementSpeed = 0;
         }
     }
+
+    #endregion
+
+    #region Interact and rotate
+
     public void TryToInteract()
     {
         RaycastHit hit;
@@ -157,5 +211,42 @@ public class PlayerCharacter : MonoBehaviour
 
             grabPosition.transform.Rotate(Vector3.right * mouseDelta.y);
         }
+    }
+
+    #endregion
+
+    private void LightCandle()
+    {
+        candleBool = !candleBool;
+        if (candleBool)
+        {
+            StartCoroutine(LitCandleAnimation());
+        }
+        else
+        {
+            StartCoroutine(UnlitCandleAnimation());
+        }
+    }
+
+    IEnumerator LitCandleAnimation()
+    {
+        candleLight.SetActive(true);
+        animCandle.SetBool("Light", true);
+        yield return new WaitForSeconds(1f);
+
+    }
+
+    IEnumerator UnlitCandleAnimation()
+    {
+        animCandle.SetBool("Light", false);
+        yield return new WaitForSeconds(1f);
+        candleLight.SetActive(false);
+
+    }
+
+    public void AddLightCandle(float Value)
+    {
+        candleOutOfTime = false;
+        candleLifeTime += Value;
     }
 }
