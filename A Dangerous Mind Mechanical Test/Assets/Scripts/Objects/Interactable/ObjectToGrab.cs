@@ -18,35 +18,13 @@ public class ObjectToGrab : MonoBehaviour, IGrabable
         col = GetComponent<BoxCollider>();
     }
 
-    //private void Update()
-    //{
-    //    if (grabbed)
-    //    {
-    //        //transform.position = newPosition.position;
-    //        //transform.rotation = newPosition.rotation;
-    //        Something();
-    //    }
-    //    else
-    //        return;
-    //    rb.velocity = Vector3.zero;
-
-    //}
-
     private void FixedUpdate()
     {
         if (grabbed)
         {
-            //if (locked)
-            //{
-                transform.position = newPosition.position;
-                transform.rotation = newPosition.rotation;
-                //locked = false;
-            //}
-            //else
-            //{
-            //    Something();
+            transform.position = newPosition.position;
+            transform.rotation = newPosition.rotation;
 
-            //}
         }
         else
             return;
@@ -59,12 +37,10 @@ public class ObjectToGrab : MonoBehaviour, IGrabable
         {
             newPosition = grabposition;
             grabbed = true;
-            //DeactivateCol();
         }
         else
         {
             grabbed = false;
-            //ActivateCol();
         }
     }
 
