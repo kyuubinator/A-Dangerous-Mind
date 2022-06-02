@@ -44,11 +44,13 @@ public class PlayerCharacter : MonoBehaviour
     private bool candleBool;
 
     [Header("KeyItemsChecks")]
+    [SerializeField] private bool KeyBedroom;
     [SerializeField] private bool KeyMasterBedroom;
     [SerializeField] private bool KeyBathroom;
     [SerializeField] private bool KeyLivingroom;
     [SerializeField] private bool KeyKitchen;
     [SerializeField] private bool KeyBox;
+    [SerializeField] private int[] keysInInventory;
     //[SerializeField] private bool ;
     //[SerializeField] private bool ;
 
@@ -57,6 +59,12 @@ public class PlayerCharacter : MonoBehaviour
     public GameObject GrabbedObject { get => grabbedObject; set => grabbedObject = value; }
     public Transform GrabPosition { get => grabPosition; set => grabPosition = value; }
     public bool FreezeMovement { get => freezeMovement; set => freezeMovement = value; }
+    public bool KeyMasterBedroom1 { get => KeyMasterBedroom; set => KeyMasterBedroom = value; }
+    public bool KeyBathroom1 { get => KeyBathroom; set => KeyBathroom = value; }
+    public bool KeyLivingroom1 { get => KeyLivingroom; set => KeyLivingroom = value; }
+    public bool KeyKitchen1 { get => KeyKitchen; set => KeyKitchen = value; }
+    public bool KeyBox1 { get => KeyBox; set => KeyBox = value; }
+    public int[] KeysInInventory { get => keysInInventory; set => keysInInventory = value; }
 
     #endregion
 
@@ -266,17 +274,25 @@ public class PlayerCharacter : MonoBehaviour
     {
         switch (value)
         {
-            case 0:
-                KeyMasterBedroom = true;
-                break;
             case 1:
-                KeyBathroom = true;
+                KeyBedroom = true;
+                keysInInventory[0] = 1;
                 break;
             case 2:
-                KeyLivingroom = true;
+                KeyMasterBedroom = true;
+                keysInInventory[1] = 2;
                 break;
             case 3:
+                KeyBathroom = true;
+                keysInInventory[2] = 3;
+                break;
+            case 4:
+                KeyLivingroom = true;
+                keysInInventory[3] = 4;
+                break;
+            case 5:
                 KeyKitchen = true;
+                keysInInventory[4] = 5;
                 break;
         }
     }

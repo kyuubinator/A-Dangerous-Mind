@@ -18,6 +18,11 @@ public class EnemyManager : MonoBehaviour
     [SerializeField] private GameObject enemy;
     [SerializeField] private WalkingEnemy enemyScript;
 
+    [SerializeField] private int minTimeIn;
+    [SerializeField] private int maxTimeIn;
+    [SerializeField] private int minTimeOut;
+    [SerializeField] private int maxTimeOut;
+
     public bool TimeOut { get => timeOut; set => timeOut = value; }
     public bool TimeOutAfterRandom { get => timeOutAfterRandom; set => timeOutAfterRandom = value; }
 
@@ -33,7 +38,7 @@ public class EnemyManager : MonoBehaviour
         {
             if (timeOutAfterRandom)
             {
-                timeOutRandom = Random.Range(30, 300);
+                timeOutRandom = Random.Range(minTimeIn, maxTimeIn);
                 timeOutAfterRandom = false;
             }
             if (timeOut)
@@ -51,7 +56,7 @@ public class EnemyManager : MonoBehaviour
 
             if (timeInAfterRandom)
             {
-                timeInRandom = Random.Range(30, 300);
+                timeInRandom = Random.Range(minTimeOut, maxTimeOut);
                 timeInAfterRandom = false;
             }
             if (timeIn)

@@ -6,6 +6,8 @@ public class Door : MonoBehaviour, IInteractable
 {
     private Animator animator;
     private bool opened;
+    [SerializeField] private int doorNumber;
+    [SerializeField] private bool unlocked;
     [SerializeField] private bool canOpen;
     [SerializeField] private bool openebleByEnemy;
 
@@ -19,7 +21,27 @@ public class Door : MonoBehaviour, IInteractable
 
     public void Interact(PlayerCharacter player)
     {
+        if (!unlocked)
+        {
+            foreach(var key in player.KeysInInventory)
+            {
+                Debug.Log("tried to unlock");
+                if (key == doorNumber)
+                {
+                    unlocked = true;
+                    OpenDoor();
+                    Debug.Log("unlocked");
+                }
+            }
+        }
+        else
+        {
+            OpenDoor();
+        }
+    }
 
+    private void OpenDoor()
+    {
         if (canOpen)
         {
             opened = !opened;
@@ -57,6 +79,25 @@ public class Door : MonoBehaviour, IInteractable
         opened = false;
         Interact(null);
     }
+
+
+    //private void CheckForKey(PlayerCharacter player)
+    //{
+    //    switch (doorNumber)
+    //    {
+    //        case 0:
+    //            player.
+    //            break;
+    //        case 1:
+    //            break;
+    //        case 2:
+    //            break;
+    //        case 3:
+    //            break;
+    //        case 4:
+    //            break;
+    //    }
+    //}
 
     private void OnTriggerEnter(Collider collision)
     {

@@ -114,7 +114,7 @@ public class WalkingEnemy : BaseEnemy
         {
             transform.LookAt(targetPosition);
         }
-        if (Vector3.Distance(transform.position, targetPosition) < 0.2f)
+        if (Vector3.Distance(transform.position, targetPosition) < 0.6f)
         {
             RandomLocation();
         }

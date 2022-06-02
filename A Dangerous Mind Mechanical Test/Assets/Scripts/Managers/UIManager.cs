@@ -200,9 +200,9 @@ public class UIManager : MonoBehaviour
     IEnumerator TextAnim ()
     {
         textToDisplayObject.SetActive(true);
-        //textToDisplayAnim.SetBool("Active", true);
-        yield return new WaitForSeconds(3);
-        //textToDisplayAnim.SetBool("Active", false);
+        textToDisplayAnim.SetBool("Active", true);
+        yield return new WaitForSeconds(5);
+        textToDisplayAnim.SetBool("Active", false);
         yield return new WaitForSeconds(1);
         textToDisplayObject.SetActive(false);
     }
