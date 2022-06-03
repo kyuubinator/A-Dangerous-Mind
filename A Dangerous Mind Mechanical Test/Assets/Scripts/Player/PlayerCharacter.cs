@@ -93,7 +93,7 @@ public class PlayerCharacter : MonoBehaviour
         }
         if (Input.GetKeyUp(KeyCode.F))
         {
-            if (candleAnimTimer >= candleAnimCooldown && !candleOutOfTime)
+            if (candleAnimTimer >= candleAnimCooldown && candleLifeTime > 0)
             {
                 LightCandle();
                 candleAnimTimer = 0;
@@ -118,10 +118,12 @@ public class PlayerCharacter : MonoBehaviour
             if (candleLifeTime <= 0)
             {
                 candleOutOfTime = true;
-                if (!candleBool)
-                {
-                    LightCandle();
-                }
+                candleLifeTime = 0;
+            }
+            if (candleOutOfTime)
+            {
+                LightCandle();
+                candleOutOfTime = false;
             }
         }
         if (moving && !playingSound)
@@ -217,7 +219,10 @@ public class PlayerCharacter : MonoBehaviour
             if (hideble != null)
             {
                 if (!hidden)
+                {
+                    FindObjectOfType<AudioManager>().Stop("Walk2");
                     hideble.Hide(this.gameObject);
+                }
             }
             if (pickup != null)
             {
