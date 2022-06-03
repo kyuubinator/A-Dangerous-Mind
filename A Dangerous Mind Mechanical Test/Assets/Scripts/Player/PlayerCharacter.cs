@@ -18,6 +18,8 @@ public class PlayerCharacter : MonoBehaviour
     [Header("Movement")]
     [SerializeField] private float maxMovementSpeed;
     [SerializeField] private float movementSpeed;
+    private bool moving;
+    private bool playingSound;
 
     [Header("Mouse")]
     private Vector3 mouseDelta;
@@ -51,8 +53,6 @@ public class PlayerCharacter : MonoBehaviour
     [SerializeField] private bool KeyKitchen;
     [SerializeField] private bool KeyBox;
     [SerializeField] private int[] keysInInventory;
-    //[SerializeField] private bool ;
-    //[SerializeField] private bool ;
 
     public bool CameraLock { get => cameraLock; }
     public bool IsGrabbing { get => isGrabbing; set => isGrabbing = value; }
@@ -124,6 +124,16 @@ public class PlayerCharacter : MonoBehaviour
                 }
             }
         }
+        if (moving && !playingSound)
+        {
+            FindObjectOfType<AudioManager>().Play("Walk2");
+            playingSound = true;
+        }
+        if(!moving && playingSound)
+        {
+            FindObjectOfType<AudioManager>().Stop("Walk2");
+            playingSound = false;
+        }
     }
 
     private void FixedUpdate()
@@ -141,15 +151,16 @@ public class PlayerCharacter : MonoBehaviour
         Vector3 finalVelocity = (direction.x * transform.right + direction.y * transform.forward).normalized * movementSpeed;
         finalVelocity.y = rigidBody.velocity.y;
         rigidBody.velocity = finalVelocity;
-
         if (Input.GetAxisRaw("Horizontal") != 0 || Input.GetAxisRaw("Vertical") != 0)
         {
-            movementSpeed += Time.deltaTime * 7;
+            movementSpeed += Time.deltaTime * 10;
             movementSpeed = Mathf.Clamp(movementSpeed, 0, maxMovementSpeed);
+            moving = true;
         }
         else
         {
             movementSpeed = 0;
+            moving = false;
         }
     }
 
