@@ -212,6 +212,7 @@ public class PlayerCharacter : MonoBehaviour
             }
             if (readable != null)
             {
+                FindObjectOfType<AudioManager>().Stop("Walk2");
                 readable.Read();
                 freezeMovement = !freezeMovement;
                 rigidBody.velocity = Vector3.zero;
@@ -251,6 +252,8 @@ public class PlayerCharacter : MonoBehaviour
 
     #endregion
 
+    #region Candle
+
     private void LightCandle()
     {
         candleBool = !candleBool;
@@ -286,6 +289,10 @@ public class PlayerCharacter : MonoBehaviour
         candleLifeTime += Value;
     }
 
+    #endregion
+
+    #region Keys
+
     public void EnableBools(int value)
     {
         switch (value)
@@ -312,4 +319,6 @@ public class PlayerCharacter : MonoBehaviour
                 break;
         }
     }
+
+    #endregion
 }

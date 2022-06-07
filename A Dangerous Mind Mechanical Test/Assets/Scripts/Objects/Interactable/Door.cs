@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Audio;
 
 public class Door : MonoBehaviour, IInteractable
 {
@@ -9,7 +10,8 @@ public class Door : MonoBehaviour, IInteractable
     [SerializeField] private int doorNumber;
     [SerializeField] private bool unlocked;
     [SerializeField] private bool canOpen;
-    [SerializeField] private bool openebleByEnemy;
+    [SerializeField] private bool openableByEnemy;
+    [SerializeField] private AudioSource[] doorSounds;
 
     private MeshCollider col;
 
@@ -23,15 +25,19 @@ public class Door : MonoBehaviour, IInteractable
     {
         if (!unlocked)
         {
-            foreach(var key in player.KeysInInventory)
+            if (player != null)
             {
-                Debug.Log("tried to unlock");
-                if (key == doorNumber)
+                foreach(var key in player.KeysInInventory)
                 {
-                    unlocked = true;
-                    OpenDoor();
-                    Debug.Log("unlocked");
+                    Debug.Log("tried to unlock");
+                    if (key == doorNumber)
+                    {
+                        unlocked = true;
+                        OpenDoor();
+                        Debug.Log("unlocked");
+                    }
                 }
+                doorSounds[2].Play();
             }
         }
         else
@@ -55,6 +61,7 @@ public class Door : MonoBehaviour, IInteractable
 
     IEnumerator OpenCooldown()
     {
+        doorSounds[0].Play();
         canOpen = false;
         col.isTrigger = true;
         yield return new WaitForSeconds(1);
@@ -75,33 +82,16 @@ public class Door : MonoBehaviour, IInteractable
 
     IEnumerator EnemyOpenDoor()
     {
+        doorSounds[1].Play();
         yield return new WaitForSeconds(2);
         opened = false;
+        doorSounds[1].Stop();
         Interact(null);
     }
 
-
-    //private void CheckForKey(PlayerCharacter player)
-    //{
-    //    switch (doorNumber)
-    //    {
-    //        case 0:
-    //            player.
-    //            break;
-    //        case 1:
-    //            break;
-    //        case 2:
-    //            break;
-    //        case 3:
-    //            break;
-    //        case 4:
-    //            break;
-    //    }
-    //}
-
     private void OnTriggerEnter(Collider collision)
     {
-        if (openebleByEnemy)
+        if (openableByEnemy)
         {
             Debug.Log(collision.ToString());
             WalkingEnemy enemy = collision.GetComponent<WalkingEnemy>();

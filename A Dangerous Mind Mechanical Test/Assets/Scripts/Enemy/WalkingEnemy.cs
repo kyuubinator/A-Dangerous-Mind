@@ -20,6 +20,10 @@ public class WalkingEnemy : BaseEnemy
 
     [SerializeField] private UIManager ui;
     [SerializeField] private float distance;
+
+    [SerializeField] private AudioSource[] sounds;
+    [SerializeField] private float growlCooldown;
+    private float growlTimer;
     public bool SawPlayer { get => sawPlayer; }
 
 
@@ -44,6 +48,15 @@ public class WalkingEnemy : BaseEnemy
         {
             RandomLocation();
             timerResetPath = 0;
+        }
+        StartWalkSound();
+        if (sawPlayer && agent.speed != 0)
+        {
+            sounds[4].pitch = 2f;
+        }
+        else
+        {
+            sounds[4].pitch = 0.6f;
         }
     }
 
@@ -231,4 +244,33 @@ public class WalkingEnemy : BaseEnemy
             ui.ShowLose();
         }
     }
+
+    #region Sounds
+
+    private void StartWalkSound()
+    {
+        growlTimer += Time.deltaTime;
+        if (growlTimer >= growlCooldown)
+        {
+            int random = Random.Range(0, 3);
+            sounds[random].Play();
+            growlTimer = 0;
+        }
+    }
+
+    private void StopWalkSound()
+    {
+
+    }
+
+    private void StartChaseSound()
+    {
+
+    }
+
+    private void StopChaseSound()
+    {
+
+    }
+    #endregion
 }
