@@ -72,7 +72,7 @@ public class Door : MonoBehaviour, IInteractable
     public void UnlockDoor()
     {
         canOpen = true;
-        Interact(null);
+        OpenDoor();
     }
 
     public void EnemyOpen()
