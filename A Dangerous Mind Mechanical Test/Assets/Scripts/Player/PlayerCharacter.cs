@@ -54,6 +54,9 @@ public class PlayerCharacter : MonoBehaviour
     [SerializeField] private bool KeyBox;
     [SerializeField] private int[] keysInInventory;
 
+    [Header("Audio")]
+    [SerializeField] private AudioSource walkSound;
+
     public bool CameraLock { get => cameraLock; }
     public bool IsGrabbing { get => isGrabbing; set => isGrabbing = value; }
     public GameObject GrabbedObject { get => grabbedObject; set => grabbedObject = value; }
@@ -128,12 +131,12 @@ public class PlayerCharacter : MonoBehaviour
         }
         if (moving && !playingSound)
         {
-            FindObjectOfType<AudioManager>().Play("Walk2");
+            walkSound.Play();
             playingSound = true;
         }
         if(!moving && playingSound)
         {
-            FindObjectOfType<AudioManager>().Stop("Walk2");
+            walkSound.Stop();
             playingSound = false;
         }
     }
@@ -212,7 +215,7 @@ public class PlayerCharacter : MonoBehaviour
             }
             if (readable != null)
             {
-                FindObjectOfType<AudioManager>().Stop("Walk2");
+                walkSound.Stop();
                 readable.Read();
                 freezeMovement = !freezeMovement;
                 rigidBody.velocity = Vector3.zero;
@@ -221,7 +224,7 @@ public class PlayerCharacter : MonoBehaviour
             {
                 if (!hidden)
                 {
-                    FindObjectOfType<AudioManager>().Stop("Walk2");
+                    walkSound.Stop();
                     hideble.Hide(this.gameObject);
                 }
             }

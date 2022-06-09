@@ -14,6 +14,7 @@ public class UIManager : MonoBehaviour
     [SerializeField] private GameObject loseMenu;
     [SerializeField] private Dropdown screenMode;
     [SerializeField] private Dropdown screenRes;
+    [SerializeField] private Slider musicSlider;
     private FullScreenMode currentMode;
     private bool pauseActive;
     private bool gameOver;
@@ -22,13 +23,15 @@ public class UIManager : MonoBehaviour
     [SerializeField] private GameObject textToDisplayObject;
     [SerializeField] private Animator textToDisplayAnim;
     [SerializeField] private Text displayingText;
+    private AudioManager audioManager;
 
     public bool PauseActive { get => pauseActive; set => pauseActive = value; }
     public bool GameOver { get => gameOver; set => gameOver = value; }
 
     private void Start()
     {
-        ResetRes();
+        //ResetRes();
+        audioManager = AudioManager.instance;
     }
 
     private void Update()
@@ -44,6 +47,7 @@ public class UIManager : MonoBehaviour
 
     public void StartGame()
     {
+        ApplyMusicVolume();
         SceneManager.LoadScene("SampleScene");
         Time.timeScale = 1;
     }
@@ -79,6 +83,7 @@ public class UIManager : MonoBehaviour
     {
         DisableMenus();
         //Time.timeScale = 1;
+        ApplyMusicVolume();
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
         optionActive = false;
@@ -94,6 +99,7 @@ public class UIManager : MonoBehaviour
         else
         {
             optionsMenu?.SetActive(false);
+            ApplyMusicVolume();
         }
     }
 
@@ -205,5 +211,10 @@ public class UIManager : MonoBehaviour
         textToDisplayAnim.SetBool("Active", false);
         yield return new WaitForSeconds(1);
         textToDisplayObject.SetActive(false);
+    }
+
+    public void ApplyMusicVolume()
+    {
+        audioManager.Music.volume = musicSlider.value;
     }
 }
