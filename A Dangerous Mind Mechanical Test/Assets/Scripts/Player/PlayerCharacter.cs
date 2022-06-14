@@ -183,6 +183,7 @@ public class PlayerCharacter : MonoBehaviour
             IReadable readable = hit.transform.GetComponent<IReadable>();
             IHideble hideble = hit.transform.GetComponent<IHideble>();
             IPickable pickup = hit.transform.GetComponent<IPickable>();
+            SendMessage msg = hit.transform.GetComponent<SendMessage>();
             if (interactable != null)
             {
                 Debug.Log("Player Detected");
@@ -231,6 +232,10 @@ public class PlayerCharacter : MonoBehaviour
             if (pickup != null)
             {
                 pickup.Pickup(this, ui);
+            }
+            if (msg != null)
+            {
+                msg.SpeakMessage(ui);
             }
         }
     }

@@ -24,6 +24,7 @@ public class UIManager : MonoBehaviour
     [SerializeField] private Animator textToDisplayAnim;
     [SerializeField] private Text displayingText;
     private AudioManager audioManager;
+    private Coroutine actualCoroutine;
 
     public bool PauseActive { get => pauseActive; set => pauseActive = value; }
     public bool GameOver { get => gameOver; set => gameOver = value; }
@@ -43,13 +44,19 @@ public class UIManager : MonoBehaviour
                 TryToPause();
             }
         }
+        if (pauseActive || optionActive)
+        {
+            audioManager.Music.volume = musicSlider.value;
+        }
     }
 
     public void StartGame()
     {
         ApplyMusicVolume();
+        audioManager.SliderVolume = musicSlider.value;
         SceneManager.LoadScene("SampleScene");
         Time.timeScale = 1;
+        OnLevelWasLoaded(1);
     }
 
     public void TryToPause()
@@ -83,7 +90,6 @@ public class UIManager : MonoBehaviour
     {
         DisableMenus();
         //Time.timeScale = 1;
-        ApplyMusicVolume();
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
         optionActive = false;
@@ -99,7 +105,6 @@ public class UIManager : MonoBehaviour
         else
         {
             optionsMenu?.SetActive(false);
-            ApplyMusicVolume();
         }
     }
 
@@ -199,15 +204,18 @@ public class UIManager : MonoBehaviour
 
     public void DisplayText(string text)
     {
+        if (actualCoroutine != null)
+            StopCoroutine(actualCoroutine);
+        textToDisplayObject.SetActive(false);
         displayingText.text = text;
-        StartCoroutine(TextAnim());
+        actualCoroutine = StartCoroutine(TextAnim());
     }
 
     IEnumerator TextAnim ()
     {
         textToDisplayObject.SetActive(true);
         textToDisplayAnim.SetBool("Active", true);
-        yield return new WaitForSeconds(5);
+        yield return new WaitForSeconds(6);
         textToDisplayAnim.SetBool("Active", false);
         yield return new WaitForSeconds(1);
         textToDisplayObject.SetActive(false);
@@ -216,5 +224,16 @@ public class UIManager : MonoBehaviour
     public void ApplyMusicVolume()
     {
         audioManager.Music.volume = musicSlider.value;
+    }
+
+    public void OnLevelWasLoaded(int level)
+    {
+        StartCoroutine(SwapVolume());
+    }
+    
+    IEnumerator SwapVolume()
+    {
+        yield return new WaitForSeconds(1);
+        musicSlider.value = audioManager.Music.volume;
     }
 }
