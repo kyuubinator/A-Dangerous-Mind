@@ -3373,3 +3373,4 @@ Received Import Request.
 Start importing Assets/Materials/Furniture/Bed/Pillow.mat using Guid(3a05341167e9f814da0bc27344bdaf58) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'e707c3c3ec79fc69e3cb93ff151a41fe') in 0.127966 seconds 
   Import took 0.131924 seconds .
 
+AssetImportWorkerClient::OnTransportError - code=2 error=End of file
