@@ -1,0 +1,79 @@
+- Bedroom
+
+	Done
+		Armario
+		Cama
+		mesa de cabeceira
+		candierio
+		tapete
+		suitcase
+		banco
+
+
+	To do:
+		Secretária
+		cadeira
+		Relogio
+		
+
+- MasterBedroom
+
+	Done:
+		Armario
+		Cama de casal
+		2 mesas de cabeceira 
+		2 candierios
+		2 extensões de tomada
+		tapete
+		bookShelf
+		
+	To do:
+		tabua de passar roupa
+		Relogio
+
+
+- Bathroom
+
+	Done:
+
+		espelho
+		lavatorio
+		banheira
+		curtina da banheira
+		Armario
+		Rug
+		
+
+	To do:
+		laundry machine
+		cesto de roupa
+		??Plants??
+		Sanita
+		Bidé
+		Papel higienico apoio
+		escova para sanica		
+
+- Hallway
+
+	Done:
+		Mesa
+		picture
+		rug
+		
+
+
+	To do:
+		Shoe Storage
+		Key storage (quadro de curtiça na parede)
+		Umbrela holder
+		Cabide
+
+- Corridor
+
+	Done:
+
+
+	To do:
+		Quadros
+		
+		
